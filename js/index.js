@@ -57,17 +57,4 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert('Error al copiar: ', err);
             });
     });
-
-    // Simulación de la API (reemplazar con llamada real)
-    function simulateApiCall(originalUrl) {
-        return new Promise((resolve) => {
-            // Simulamos un retraso de red
-            setTimeout(() => {
-                // En una implementación real, esto vendría de tu API
-                const baseUrl = 'https://swiftlink.io/';
-                const randomId = Math.random().toString(36).substring(2, 8);
-                resolve(baseUrl + randomId);
-            }, 800);
-        });
-    }
 });
