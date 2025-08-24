@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planes - SwiftLink</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366F1',
+                        secondary: '#4F46E5',
+                        accent: '#4338CA',
+                        light: '#F5F7FF',
+                        dark: '#1F2937',
+                        success: '#10B981'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .pricing-card {
+            transition: all 0.3s ease;
+            border-top: 4px solid #6366F1;
+        }
+        
+        .pricing-card.popular {
+            border-top: 4px solid #10B981;
+            transform: scale(1.03);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .popular-tag {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: linear-gradient(135deg, #10B981 0%, #0C9C6B 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .feature-list li {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .feature-list li i {
+            margin-top: 0.25rem;
+            margin-right: 0.5rem;
+        }
+        
+        .cta-button {
+            background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+        }
+        
+        .bolt-icon {
+            display: inline-block;
+            animation: bolt 2s infinite;
+        }
+        
+        @keyframes bolt {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fas fa-bolt text-primary text-2xl mr-2 bolt-icon"></i>
+                <span class="text-2xl font-bold text-primary">SwiftLink</span>
+            </div>
+            
+            <nav class="hidden md:flex space-x-8">
+                <a href="#" class="text-gray-600 hover:text-primary font-medium">Inicio</a>
+                <a href="#" class="text-primary font-medium">Planes</a>
+                <a href="#" class="text-gray-600 hover:text-primary font-medium">Características</a>
+                <a href="#" class="text-gray-600 hover:text-primary font-medium">FAQs</a>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <a href="#" class="text-gray-600 hover:text-primary hidden md:inline-block font-medium">Iniciar Sesión</a>
+                <a href="#" class="cta-button text-white px-5 py-2.5 rounded-lg font-medium shadow-md">Registrarse</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-primary to-secondary text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-4">Planes para todos los necesidades</h1>
+            <p class="text-xl max-w-2xl mx-auto mb-8">Elige el plan que mejor se adapte a tus necesidades de acortamiento de URLs y análisis.</p>
+        </div>
+    </section>
+
+    <!-- Planes de precios -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Plan Gratuito -->
+                <div class="pricing-card bg-white rounded-xl p-8 relative">
+                    <h3 class="text-2xl font-bold text-dark mb-2">Plan Gratuito</h3>
+                    <p class="text-gray-600 mb-6">Ideal para usuarios ocasionales</p>
+                    <div class="mb-6">
+                        <span class="text-4xl font-bold text-dark">$0</span>
+                        <span class="text-gray-600">/siempre</span>
+                    </div>
+                    <ul class="feature-list text-gray-600 mb-8">
+                        <li><i class="fas fa-check-circle text-success"></i> Hasta 50 enlaces/mes</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Análisis básicos de clics</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Soporte por correo electrónico</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Personalización básica de enlaces</li>
+                        <li><i class="fas fa-times-circle text-gray-400"></i> Sin datos de geolocalización</li>
+                        <li><i class="fas fa-times-circle text-gray-400"></i> Sin API access</li>
+                        <li><i class="fas fa-times-circle text-gray-400"></i> Sin métricas avanzadas</li>
+                    </ul>
+                    <button class="w-full bg-gray-200 text-gray-800 py-3 rounded-lg font-medium">Plan Actual</button>
+                </div>
+                
+                <!-- Plan Pro -->
+                <div class="pricing-card bg-white rounded-xl p-8 relative popular">
+                    <div class="popular-tag">MÁS POPULAR</div>
+                    <h3 class="text-2xl font-bold text-dark mb-2">Plan Pro</h3>
+                    <p class="text-gray-600 mb-6">Para profesionales y pequeñas empresas</p>
+                    <div class="mb-6">
+                        <span class="text-4xl font-bold text-dark">$9</span>
+                        <span class="text-gray-600">/mes</span>
+                    </div>
+                    <ul class="feature-list text-gray-600 mb-8">
+                        <li><i class="fas fa-check-circle text-success"></i> Enlaces ilimitados</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Análisis avanzados de clics</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Datos de geolocalización</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Personalización completa de enlaces</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Acceso a API completo</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Métricas avanzadas</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Soporte prioritario</li>
+                    </ul>
+                    <button class="w-full cta-button text-white py-3 rounded-lg font-medium shadow-md">Elegir Plan Pro</button>
+                </div>
+                
+                <!-- Plan Empresarial -->
+                <div class="pricing-card bg-white rounded-xl p-8 relative">
+                    <h3 class="text-2xl font-bold text-dark mb-2">Plan Empresarial</h3>
+                    <p class="text-gray-600 mb-6">Para empresas y grandes volúmenes</p>
+                    <div class="mb-6">
+                        <span class="text-4xl font-bold text-dark">$29</span>
+                        <span class="text-gray-600">/mes</span>
+                    </div>
+                    <ul class="feature-list text-gray-600 mb-8">
+                        <li><i class="fas fa-check-circle text-success"></i> Todo lo del Plan Pro</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Dominio personalizado</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Branding personalizado</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Estadísticas en tiempo real</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Integraciones avanzadas</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Soporte 24/7 prioritario</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Usuarios ilimitados</li>
+                    </ul>
+                    <button class="w-full cta-button text-white py-3 rounded-lg font-medium shadow-md">Elegir Plan Empresarial</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparación de planes -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-dark mb-4">Comparación detallada de planes</h2>
+            <p class="text-gray-600 text-center max-w-2xl mx-auto mb-12">Encuentra el plan perfecto para tus necesidades</p>
+            
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white rounded-lg overflow-hidden">
+                    <thead>
+                        <tr class="bg-gray-50 text-left">
+                            <th class="py-4 px-6 font-semibold text-gray-700">Características</th>
+                            <th class="py-4 px-6 font-semibold text-gray-700 text-center">Gratuito</th>
+                            <th class="py-4 px-6 font-semibold text-gray-700 text-center">Pro</th>
+                            <th class="py-4 px-6 font-semibold text-gray-700 text-center">Empresarial</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <tr>
+                            <td class="py-4 px-6 font-medium">Enlaces por mes</td>
+                            <td class="py-4 px-6 text-center">50</td>
+                            <td class="py-4 px-6 text-center">Ilimitados</td>
+                            <td class="py-4 px-6 text-center">Ilimitados</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="py-4 px-6 font-medium">Análisis básicos</td>
+                            <td class="py-4 px-6 text-center"><i class="fas fa-check-circle text-success"></i></td>
+                            <td class="py-4 px-6 text-center"><i class="fas fa-check-circle text-success"></i></td>
+                            <td class="py-4 px-6 text-center"><i class="fas fa-check-circle text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-6 font-medium">Análisis avanzados</td>
+                            <td class="py-4 px-6 text-center"><i class="fas fa-times-circle text-gray-400"></i></td>
+                            <td class="py-4 px-6 text-center"><i class="fas fa-check-circle text-success"></i></td>
+                            <td class="py-4 px-6 text-center"><i class="fas fa-check-circle text-success"></i></td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="py-4 px-6 font-medium">Geolocalización</td>
+                            <td class="py-4 px-6 text-center"><i class="fas fa-times-circle text-gray-400"></i></td>
+                            <td class="py-4 px-6 text-center"><i class="fas fa-check-circle text-success"></i></td>
+                            <td class="py-4 px-6 text-center"><i class="fas fa-check-circle text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-6 font-medium">Personalización</td>
+                            <td class="py-4 px-6 text-center">Básica</td>
+                            <td class="py-4 px-6 text-center">Completa</td>
+                            <td class="py-4 px-6 text-center">Completa</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="py-4 px-6 font-medium">Acceso API</td>
+                            <td class="py-4 px-6 text-center"><i class="fas fa-times-circle text-gray-400"></i></td>
+                            <td class="py-4 px-6 text-center"><i class="fas fa-check-circle text-success"></i></td>
+                            <td class="py-4 px-6 text-center"><i class="fas fa-check-circle text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-6 font-medium">Dominio personalizado</td>
+                            <td class="py-4 px-6 text-center"><i class="fas fa-times-circle text-gray-400"></i></td>
+                            <td class="py-4 px-6 text-center"><i class="fas fa-times-circle text-gray-400"></i></td>
+                            <td class="py-4 px-6 text-center"><i class="fas fa-check-circle text-success"></i></td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="py-4 px-6 font-medium">Soporte</td>
+                            <td class="py-4 px-6 text-center">Email</td>
+                            <td class="py-4 px-6 text-center">Prioritario</td>
+                            <td class="py-4 px-6 text-center">24/7 Premium</td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-6 font-medium">Usuarios</td>
+                            <td class="py-4 px-6 text-center">1</td>
+                            <td class="py-4 px-6 text-center">1</td>
+                            <td class="py-4 px-6 text-center">Ilimitados</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Preguntas frecuentes -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-dark mb-4">Preguntas frecuentes</h2>
+            <p class="text-gray-600 text-center max-w-2xl mx-auto mb-12">Resolvemos tus dudas sobre nuestros planes</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div class="bg-white rounded-xl p-6 shadow-md">
+                    <h3 class="text-xl font-semibold text-dark mb-2">¿Puedo cambiar de plan en cualquier momento?</h3>
+                    <p class="text-gray-600">Sí, puedes cambiar entre planes en cualquier momento. Los cambios se reflejarán en tu próxima facturación.</p>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-md">
+                    <h3 class="text-xl font-semibold text-dark mb-2">¿Ofrecen descuentos para equipos?</h3>
+                    <p class="text-gray-600">Sí, ofrecemos descuentos especiales para equipos y empresas. Contáctanos para más información.</p>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-md">
+                    <h3 class="text-xl font-semibold text-dark mb-2">¿Qué métodos de pago aceptan?</h3>
+                    <p class="text-gray-600">Aceptamos tarjetas de crédito, PayPal y transferencias bancarias para pagos mensuales y anuales.</p>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-md">
+                    <h3 class="text-xl font-semibold text-dark mb-2">¿Puedo cancelar mi suscripción?</h3>
+                    <p class="text-gray-600">Sí, puedes cancelar tu suscripción en cualquier momento sin cargos adicionales.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-16 bg-primary text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-4">¿Listo para comenzar?</h2>
+            <p class="text-xl max-w-2xl mx-auto mb-8">Elige el plan que mejor se adapte a tus necesidades y comienza a acortar tus URLs hoy mismo.</p>
+            
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="#" class="bg-white text-primary px-8 py-3.5 rounded-lg font-medium shadow-md hover:bg-gray-100 transition">Probar Gratis</a>
+                <a href="#" class="border-2 border-white text-white px-8 py-3.5 rounded-lg font-medium hover:bg-white hover:text-primary transition">Contactar Ventas</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-bolt text-primary text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-primary">SwiftLink</span>
+                    </div>
+                    <p class="text-gray-400">El acortador de URLs rápido como un rayo, con métricas avanzadas y geolocalización.</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Producto</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Características</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Planes</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">API</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Casos de uso</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Recursos</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Documentación</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Soporte</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">FAQs</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Conecta</h3>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                    <p class="text-gray-400">© 2023 SwiftLink. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

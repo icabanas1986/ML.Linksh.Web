@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquitectura del Sistema - SwiftLink</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.3.0/dist/mermaid.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366F1',
+                        secondary: '#4F46E5',
+                        accent: '#4338CA',
+                        light: '#F5F7FF',
+                        dark: '#1F2937',
+                    }
+                }
+            }
+        }
+        
+        // Inicializar mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({ 
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: false,
+                    htmlLabels: true,
+                    curve: 'basis'
+                }
+            });
+        });
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .architecture-container {
+            overflow-x: auto;
+        }
+        
+        .mermaid {
+            min-width: 1200px;
+        }
+        
+        .card {
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center">
+                <i class="fas fa-bolt text-primary text-2xl mr-2"></i>
+                <span class="text-2xl font-bold text-primary">SwiftLink</span>
+                <span class="ml-2 text-gray-600">Arquitectura del Sistema</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-dark mb-2">Arquitectura del Sistema Acortador de URL</h1>
+            <p class="text-gray-600 max-w-3xl mx-auto">Diagrama que muestra la estructura completa del sistema con backend en .NET alojado en Somee y frontend en Vercel.</p>
+        </div>
+        
+        <!-- Diagrama de Arquitectura -->
+        <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold text-dark mb-4">Diagrama de Componentes</h2>
+            <div class="architecture-container">
+                <div class="mermaid">
+                    graph TB
+                    %% Frontend
+                    subgraph Frontend [Frontend - Vercel]
+                        WEB[Página Web<br/>HTML/CSS/JS]
+                        USER[Usuario Final]
+                    end
+                    
+                    %% Backend
+                    subgraph Backend [Backend - .NET en Somee]
+                        API[API REST .NET Core]
+                        CONTROLLER[Controladores]
+                        SERVICE[Servicios de Negocio]
+                        REPO[Repositorios]
+                    end
+                    
+                    %% Base de datos
+                    subgraph Database [Base de Datos - Somee]
+                        DB[(SQL Server<br/>Tabla URLs)]
+                    end
+                    
+                    %% Servicios externos
+                    subgraph External [Servicios Externos]
+                        GEO[API Geolocalización]
+                        ANALYTICS[Servicio de Analytics]
+                    end
+                    
+                    %% Flujos
+                    USER -->|Solicita acortar URL| WEB
+                    WEB -->|Envía solicitud| API
+                    API -->|Procesa petición| CONTROLLER
+                    CONTROLLER -->|Lógica de negocio| SERVICE
+                    SERVICE -->|Acceso a datos| REPO
+                    REPO -->|Almacena/Consulta| DB
+                    SERVICE -->|Obtiene datos geográficos| GEO
+                    SERVICE -->|Registra analytics| ANALYTICS
+                    API -->|Retorna URL acortada| WEB
+                    WEB -->|Muestra resultado| USER
+                    
+                    %% Estilos
+                    classDef frontend fill:#4F46E5,color:white,stroke:#4338CA,stroke-width:2px;
+                    classDef backend fill:#10B981,color:white,stroke:#0C9C6B,stroke-width:2px;
+                    classDef database fill:#F59E0B,color:white,stroke:#D97706,stroke-width:2px;
+                    classDef external fill:#6366F1,color:white,stroke:#4F46E5,stroke-width:2px;
+                    
+                    class WEB,USER frontend;
+                    class API,CONTROLLER,SERVICE,REPO backend;
+                    class DB database;
+                    class GEO,ANALYTICS external;
+                </div>
+            </div>
+        </div>
+        
+        <!-- Explicación de Componentes -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="card bg-white rounded-xl shadow-md p-6">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-desktop text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-dark">Frontend (Vercel)</h3>
+                </div>
+                <ul class="text-gray-600 space-y-2">
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-primary mt-1 mr-2"></i>
+                        <span>Desarrollado con HTML, CSS (Tailwind) y JavaScript/jQuery</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-primary mt-1 mr-2"></i>
+                        <span>Interfaz responsiva y moderna</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-primary mt-1 mr-2"></i>
+                        <span>Comunicación con API mediante AJAX</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-primary mt-1 mr-2"></i>
+                        <span>Alojado en Vercel para máximo rendimiento</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="card bg-white rounded-xl shadow-md p-6">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-server text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-dark">Backend (.NET en Somee)</h3>
+                </div>
+                <ul class="text-gray-600 space-y-2">
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span>Desarrollado con .NET Core / .NET 6+</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span>Arquitectura en capas (Controladores, Servicios, Repositorios)</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span>API RESTful con endpoints para acortar URLs y obtener analytics</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span>Alojado en Somee con base de datos SQL Server</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Flujo de Datos -->
+        <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold text-dark mb-4">Flujo de Datos para Acortar una URL</h2>
+            <div class="architecture-container">
+                <div class="mermaid">
+                    sequenceDiagram
+                    participant U as Usuario
+                    participant F as Frontend (Vercel)
+                    participant A as API .NET (Somee)
+                    participant S as Servicio
+                    participant R as Repositorio
+                    participant DB as SQL Server (Somee)
+                    
+                    U->>F: Ingresa URL larga y hace clic en "Acortar"
+                    F->>A: POST /api/urls (con URL original)
+                    A->>S: ProcessUrl(url)
+                    S->>S: Generar código único
+                    S->>R: GuardarUrl(urlOriginal, codigo)
+                    R->>DB: INSERT en tabla URLs
+                    DB-->>R: ID generado
+                    R-->>S: Entidad URL guardada
+                    S-->>A: URL acortada (response DTO)
+                    A-->>F: Respuesta JSON con URL acortada
+                    F->>F: Mostrar URL acortada con indicador de éxito
+                    F-->>U: Mostrar resultado al usuario
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tabla de Endpoints -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <h2 class="text-xl font-semibold text-dark mb-4">Endpoints Principales de la API</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Método</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Endpoint</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Body/Params</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">POST</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">/api/urls</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">Acortar una nueva URL</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{ "originalUrl": "https://..." }</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">GET</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">/api/urls/{codigo}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">Redireccionar a URL original</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">Código en URL</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">GET</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">/api/urls/{codigo}/analytics</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">Obtener analytics de URL</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">Código en URL</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">GET</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">/api/urls/{codigo}/clicks</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">Obtener datos de clics</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">Código en URL</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white py-8 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p>© 2023 SwiftLink - Sistema Acortador de URLs</p>
+            <p class="text-gray-400 mt-2">Arquitectura: Frontend en Vercel, Backend en .NET (Somee)</p>
+        </div>
+    </footer>
+
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</body>
+</html>
