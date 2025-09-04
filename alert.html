@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alertas - SwiftLink</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366F1',
+                        secondary: '#4F46E5',
+                        accent: '#4338CA',
+                        light: '#F5F7FF',
+                        dark: '#1F2937',
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444',
+                        info: '#3B82F6'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            min-height: 100vh;
+        }
+        
+        .logo-text {
+            font-weight: 700;
+            background: linear-gradient(135deg, #4F46E5 0%, #4338CA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .alert-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 400px;
+        }
+        
+        .alert {
+            padding: 16px 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: flex-start;
+            animation: slideIn 0.3s ease-out forwards;
+            opacity: 0;
+            transform: translateX(100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .alert.hide {
+            animation: slideOut 0.3s ease-in forwards;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .alert-error {
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+            color: white;
+        }
+        
+        .alert-warning {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            color: white;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            color: white;
+        }
+        
+        .alert-icon {
+            margin-right: 12px;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .alert-content {
+            flex-grow: 1;
+        }
+        
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .alert-message {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .alert-close {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            margin-left: 12px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            flex-shrink: 0;
+        }
+        
+        .alert-close:hover {
+            opacity: 1;
+        }
+        
+        .alert-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            width: 100%;
+            border-radius: 0 0 10px 10px;
+            overflow: hidden;
+        }
+        
+        .alert-progress-bar {
+            height: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 0 0 10px 10px;
+            animation: progressBar 5s linear forwards;
+        }
+        
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideOut {
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+        
+        @keyframes progressBar {
+            from {
+                width: 100%;
+            }
+            to {
+                width: 0%;
+            }
+        }
+        
+        .demo-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .btn-error {
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            color: white;
+        }
+        
+        .btn-info {
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            color: white;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: #6366F1;
+            border: 2px solid #6366F1;
+        }
+        
+        .btn-outline:hover {
+            background: #6366F1;
+            color: white;
+        }
+        
+        .bolt-icon {
+            display: inline-block;
+            animation: bolt 2s infinite;
+        }
+        
+        @keyframes bolt {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header con navegación -->
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fas fa-bolt text-primary text-2xl mr-2 bolt-icon"></i>
+                <span class="text-2xl font-bold logo-text">SwiftLink</span>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <a href="#" class="text-gray-600 hover:text-primary font-medium">Inicio</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold text-center text-dark mb-2">Sistema de Alertas SwiftLink</h1>
+            <p class="text-gray-600 text-center mb-8">Mensajes de alerta con diseño moderno y elegante</p>
+            
+            <div class="demo-container">
+                <h2 class="text-xl font-semibold text-dark mb-4">Tipos de alertas disponibles</h2>
+                <p class="text-gray-600 mb-6">Haz clic en los botones para mostrar diferentes tipos de alertas:</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                    <button class="btn btn-success" onclick="showAlert('success', '¡Éxito!', 'Tu URL se ha acortado correctamente.')">
+                        <i class="fas fa-check-circle mr-2"></i>Alerta de éxito
+                    </button>
+                    
+                    <button class="btn btn-error" onclick="showAlert('error', 'Error', 'Ha ocurrido un error al procesar tu solicitud.')">
+                        <i class="fas fa-exclamation-circle mr-2"></i>Alerta de error
+                    </button>
+                    
+                    <button class="btn btn-warning" onclick="showAlert('warning', 'Advertencia', 'Estás intentando generar más enlaces de los permitidos.')">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>Alerta de advertencia
+                    </button>
+                    
+                    <button class="btn btn-info" onclick="showAlert('info', 'Información', 'Tu enlace expirará en 7 días.')">
+                        <i class="fas fa-info-circle mr-2"></i>Alerta informativa
+                    </button>
+                </div>
+                
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="font-semibold text-gray-800 mb-2">Personalización de alertas</h3>
+                    <p class="text-gray-600 text-sm">Puedes crear alertas personalizadas con diferentes mensajes y duraciones.</p>
+                    <div class="mt-4 flex gap-2">
+                        <input type="text" id="custom-message" placeholder="Escribe tu mensaje personalizado" class="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                        <button class="btn btn-primary" onclick="showCustomAlert()">Mostrar</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-container mt-6">
+                <h2 class="text-xl font-semibold text-dark mb-4">Características de las alertas</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <div class="flex items-center mb-2">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-paint-brush text-blue-600"></i>
+                            </div>
+                            <h3 class="font-semibold">Diseño elegante</h3>
+                        </div>
+                        <p class="text-gray-600 text-sm">Alertas con gradientes y animaciones suaves que se integran perfectamente con el diseño de SwiftLink.</p>
+                    </div>
+                    
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <div class="flex items-center mb-2">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-clock text-green-600"></i>
+                            </div>
+                            <h3 class="font-semibold">Auto-cierre</h3>
+                        </div>
+                        <p class="text-gray-600 text-sm">Las alertas se cierran automáticamente después de 5 segundos, con una barra de progreso visual.</p>
+                    </div>
+                    
+                    <div class="bg-yellow-50 p-4 rounded-lg">
+                        <div class="flex items-center mb-2">
+                            <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-times-circle text-yellow-600"></i>
+                            </div>
+                            <h3 class="font-semibold">Cierre manual</h3>
+                        </div>
+                        <p class="text-gray-600 text-sm">Los usuarios pueden cerrar las alertas manualmente haciendo clic en la "X".</p>
+                    </div>
+                    
+                    <div class="bg-purple-50 p-4 rounded-lg">
+                        <div class="flex items-center mb-2">
+                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-mobile-alt text-purple-600"></i>
+                            </div>
+                            <h3 class="font-semibold">Responsive</h3>
+                        </div>
+                        <p class="text-gray-600 text-sm">Diseño adaptable que funciona perfectamente en dispositivos móviles y escritorio.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Contenedor para alertas -->
+    <div class="alert-container" id="alert-container"></div>
+
+    <script>
+        // Función para mostrar alertas
+        function showAlert(type, title, message, duration = 5000) {
+            const alertContainer = document.getElementById('alert-container');
+            const alertId = 'alert-' + Date.now();
+            
+            // Icono según el tipo
+            let iconClass;
+            switch(type) {
+                case 'success':
+                    iconClass = 'fas fa-check-circle';
+                    break;
+                case 'error':
+                    iconClass = 'fas fa-exclamation-circle';
+                    break;
+                case 'warning':
+                    iconClass = 'fas fa-exclamation-triangle';
+                    break;
+                case 'info':
+                    iconClass = 'fas fa-info-circle';
+                    break;
+                default:
+                    iconClass = 'fas fa-info-circle';
+            }
+            
+            // Crear elemento de alerta
+            const alertElement = document.createElement('div');
+            alertElement.id = alertId;
+            alertElement.className = `alert alert-${type}`;
+            alertElement.innerHTML = `
+                <div class="alert-icon">
+                    <i class="${iconClass}"></i>
+                </div>
+                <div class="alert-content">
+                    <div class="alert-title">${title}</div>
+                    <div class="alert-message">${message}</div>
+                </div>
+                <button class="alert-close" onclick="closeAlert('${alertId}')">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="alert-progress">
+                    <div class="alert-progress-bar"></div>
+                </div>
+            `;
+            
+            // Agregar al contenedor
+            alertContainer.appendChild(alertElement);
+            
+            // Auto-cerrar después de la duración especificada
+            if (duration > 0) {
+                setTimeout(() => {
+                    closeAlert(alertId);
+                }, duration);
+            }
+            
+            // Devolver ID para control manual
+            return alertId;
+        }
+        
+        // Función para cerrar alertas
+        function closeAlert(alertId) {
+            const alertElement = document.getElementById(alertId);
+            if (alertElement) {
+                alertElement.classList.add('hide');
+                setTimeout(() => {
+                    if (alertElement.parentNode) {
+                        alertElement.parentNode.removeChild(alertElement);
+                    }
+                }, 300);
+            }
+        }
+        
+        // Función para mostrar alerta personalizada
+        function showCustomAlert() {
+            const messageInput = document.getElementById('custom-message');
+            const message = messageInput.value.trim();
+            
+            if (message) {
+                showAlert('info', 'Mensaje personalizado', message);
+                messageInput.value = '';
+            } else {
+                showAlert('warning', 'Campo vacío', 'Por favor, escribe un mensaje personalizado.');
+            }
+        }
+        
+        // Ejemplo de uso en diferentes situaciones
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simular una alerta de bienvenida
+            setTimeout(() => {
+                showAlert('info', 'Bienvenido a SwiftLink', 'Explora nuestro sistema de alertas personalizadas.');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

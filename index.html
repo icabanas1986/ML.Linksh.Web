@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="js/jquery-3.7.1.min.js"></script>
     <script src="js/config.js"></script>
-    <script src="js/index.js"></script>
+    <link rel="stylesheet" href="css/alertStyle.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
@@ -173,27 +173,156 @@
                 transform: scale(1.1);
             }
         }
+        .modal-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal-container.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            width: 90%;
+            max-width: 500px;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-container.active .modal {
+            transform: scale(1);
+            opacity: 1;
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px 12px 0 0;
+            text-align: center;
+            position: relative;
+        }
+        
+        .modal-body {
+            padding: 25px;
+        }
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .benefit-icon {
+            background: #6366F1;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .modal-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .modal-btn-primary {
+            background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+            color: white;
+            border: none;
+        }
+        
+        .modal-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+        }
+        
+        .modal-btn-outline {
+            background: transparent;
+            color: #6366F1;
+            border: 2px solid #6366F1;
+        }
+        
+        .modal-btn-outline:hover {
+            background: #6366F1;
+            color: white;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+        
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
     <!-- Header con navegación -->
     <header class="bg-white shadow-sm">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center">
+            <a href="index.html" class="flex items-center">
                 <i class="fas fa-bolt text-primary text-2xl mr-2 bolt-icon"></i>
                 <span class="text-2xl font-bold logo-text">SwiftLink</span>
-            </div>
+            </a>
             
             <nav class="hidden md:flex space-x-8">
-                <a href="#" class="text-gray-600 hover:text-primary font-medium">Inicio</a>
+                <a href="index.html" class="text-gray-600 hover:text-primary font-medium">Inicio</a>
                 <a href="#features" class="text-gray-600 hover:text-primary font-medium">Características</a>
                 <a href="#how-it-works" class="text-gray-600 hover:text-primary font-medium">Cómo funciona</a>
-                <a href="#" class="text-gray-600 hover:text-primary font-medium">Precios</a>
+                <a href="planes.html" class="text-gray-600 hover:text-primary font-medium">Precios</a>
             </nav>
             
             <div class="flex items-center space-x-4">
-                <a href="#" class="text-gray-600 hover:text-primary hidden md:inline-block font-medium">Iniciar Sesión</a>
-                <a href="#" class="cta-button text-white px-5 py-2.5 rounded-lg font-medium shadow-md">Registrarse</a>
+                <a href="login.html" class="text-gray-600 hover:text-primary hidden md:inline-block font-medium">Iniciar Sesión</a>
+                <a href="singup.html" class="cta-button text-white px-5 py-2.5 rounded-lg font-medium shadow-md">Registrarse</a>
             </div>
         </div>
     </header>
@@ -314,6 +443,84 @@
         </div>
     </section>
 
+    <!-- Modal de registro -->
+    <div class="modal-container" id="modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="text-2xl font-bold">¡Necesitas una cuenta!</h2>
+                <p>Para generar más enlaces, crea una cuenta gratis</p>
+                <div class="close-btn" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            
+            <div class="modal-body">
+                <p class="text-gray-600 mb-6">Has alcanzado el límite de enlaces para usuarios no registrados. Regístrate para disfrutar de estos beneficios:</p>
+                
+                <div class="benefits-list">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-infinity"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold">Enlaces ilimitados</h3>
+                            <p class="text-gray-600 text-sm">Crea todos los enlaces que necesites sin restricciones.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold">Estadísticas detalladas</h3>
+                            <p class="text-gray-600 text-sm">Accede a métricas de clicks, ubicación y más.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold">Gestión de enlaces</h3>
+                            <p class="text-gray-600 text-sm">Organiza, edita y controla todos tus enlaces en un solo lugar.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold">Enlaces permanentes</h3>
+                            <p class="text-gray-600 text-sm">Tus enlaces no expirarán y estarán siempre disponibles.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold">Panel personalizado</h3>
+                            <p class="text-gray-600 text-sm">Accede a un dashboard con todas tus URLs y estadísticas.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-outline"  onclick="Login()">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Iniciar Sesión
+                </button>
+                <button class="modal-btn modal-btn-primary" onclick="registro()">
+                    <i class="fas fa-user-plus mr-2"></i>Registrarse
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Call to Action -->
     <section class="py-16 bg-primary text-white">
         <div class="container mx-auto px-4 text-center">
@@ -321,8 +528,7 @@
             <p class="text-xl max-w-2xl mx-auto mb-8">Regístrate ahora y descubre todas las ventajas de SwiftLink.</p>
             
             <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <a href="#" class="cta-button text-white px-8 py-3.5 rounded-lg font-medium shadow-md">Crear cuenta gratuita</a>
-                <a href="#" class="border-2 border-white text-white px-8 py-3.5 rounded-lg font-medium hover:bg-white hover:text-primary transition">Más información</a>
+                <a href="singup.html" class="cta-button text-white px-8 py-3.5 rounded-lg font-medium shadow-md">Crear cuenta gratuita</a>
             </div>
         </div>
     </section>
@@ -371,6 +577,10 @@
                 </div>
             </div>
         </div>
+        <!-- Contenedor para alertas -->
+            <div class="alert-container" id="alert-container"></div>
+        <input type="hidden" id="urlCount" value="0"/>
     </footer>
+    <script src="js/index.js"></script>
 </body>
 </html>
