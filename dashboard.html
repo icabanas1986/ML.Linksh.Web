@@ -1,853 +1,204 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - SwiftLink</title>
+    <title>Dashboard - LinkSh</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        primary: '#6366F1',
-                        secondary: '#4F46E5',
-                        accent: '#4338CA',
-                        light: '#F5F7FF',
-                        dark: '#1F2937',
-                        success: '#10B981',
-                        warning: '#F59E0B',
-                        error: '#EF4444',
-                        info: '#3B82F6'
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        }
                     }
                 }
             }
         }
     </script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #F9FAFB;
-        }
-        
-        .logo-text {
-            font-weight: 700;
-            background: linear-gradient(135deg, #4F46E5 0%, #4338CA 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .sidebar {
-            width: 260px;
-            transition: all 0.3s ease;
-        }
-        
-        .main-content {
-            margin-left: 260px;
-            transition: all 0.3s ease;
-        }
-        
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                position: fixed;
-                z-index: 50;
-                height: 100vh;
-            }
-            
-            .sidebar.active {
-                transform: translateX(0);
-            }
-            
-            .main-content {
-                margin-left: 0;
-            }
-            
-            .overlay {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-color: rgba(0, 0, 0, 0.5);
-                z-index: 40;
-            }
-            
-            .overlay.active {
-                display: block;
-            }
-        }
-        
-        .nav-item {
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-        }
-        
-        .nav-item:hover {
-            background-color: #F3F4F6;
-        }
-        
-        .nav-item.active {
-            background-color: #EEF2FF;
-            border-left-color: #6366F1;
-            color: #6366F1;
-        }
-        
-        .nav-item.active i {
-            color: #6366F1;
-        }
-        
-        .card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            transition: all 0.3s ease;
-        }
-        
-        .card:hover {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
-        }
-        
-        .url-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-        
-        .url-table th {
-            background-color: #F9FAFB;
-            padding: 12px 16px;
-            text-align: left;
-            font-weight: 600;
-            color: #374151;
-            border-bottom: 1px solid #E5E7EB;
-        }
-        
-        .url-table td {
-            padding: 16px;
-            border-bottom: 1px solid #E5E7EB;
-        }
-        
-        .url-table tr:last-child td {
-            border-bottom: none;
-        }
-        
-        .url-table tr:hover {
-            background-color: #F9FAFB;
-        }
-        
-        .stats-card {
-            border-left: 4px solid;
-        }
-        
-        .stats-card.clicks {
-            border-left-color: #6366F1;
-        }
-        
-        .stats-card.links {
-            border-left-color: #10B981;
-        }
-        
-        .stats-card.rate {
-            border-left-color: #F59E0B;
-        }
-        
-        .chart-container {
-            position: relative;
-            height: 250px;
-        }
-        
-        .modal-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .modal-container.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .modal {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            width: 90%;
-            max-width: 500px;
-            transform: scale(0.9);
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-        
-        .modal-container.active .modal {
-            transform: scale(1);
-            opacity: 1;
-        }
-        
-        .input-field {
-            transition: all 0.3s ease;
-            border: 1px solid #e5e7eb;
-        }
-        
-        .input-field:focus {
-            border-color: #6366F1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-        
-        .toggle-checkbox:checked {
-            right: 0;
-            border-color: #6366F1;
-        }
-        
-        .toggle-checkbox:checked + .toggle-label {
-            background-color: #6366F1;
-        }
-        
-        .copy-btn {
-            transition: all 0.2s ease;
-        }
-        
-        .copy-btn:hover {
-            background-color: #EFF6FF;
-            color: #3B82F6;
-        }
-        
-        .pagination-btn {
-            transition: all 0.2s ease;
-        }
-        
-        .pagination-btn:hover:not(.disabled) {
-            background-color: #EFF6FF;
-            color: #3B82F6;
-        }
-        
-        .menu-btn {
-            display: none;
-        }
-        
-        @media (max-width: 768px) {
-            .menu-btn {
-                display: block;
-            }
-        }
-        
-        .animate-pulse {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: .5;
-            }
-        }
-        
-        .loading-shimmer {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-        }
-        
-        @keyframes loading {
-            0% {
-                background-position: 200% 0;
-            }
-            100% {
-                background-position: -200% 0;
-            }
-        }
-    </style>
 </head>
-<body class="bg-gray-50">
-    <!-- Overlay para móvil -->
-    <div class="overlay" id="overlay"></div>
-
-    <!-- Sidebar -->
-    <div class="sidebar fixed inset-y-0 left-0 bg-white shadow-sm z-30" id="sidebar">
-        <div class="flex flex-col h-full">
-            <div class="flex items-center justify-center h-16 px-4 shadow-sm">
-                <i class="fas fa-bolt text-primary text-2xl mr-2"></i>
-                <span class="text-xl font-bold logo-text">SwiftLink</span>
-            </div>
-            
-            <div class="flex-1 overflow-y-auto px-4 py-6">
-                <nav class="space-y-1">
-                    <a href="#" class="nav-item active flex items-center px-4 py-3 rounded-lg">
-                        <i class="fas fa-home mr-3 text-gray-500"></i>
-                        <span>Dashboard</span>
-                    </a>
-                    
-                    <a href="#" class="nav-item flex items-center px-4 py-3 rounded-lg">
-                        <i class="fas fa-link mr-3 text-gray-500"></i>
-                        <span>Mis URLs</span>
-                    </a>
-                    
-                    <a href="#" class="nav-item flex items-center px-4 py-3 rounded-lg">
-                        <i class="fas fa-chart-bar mr-3 text-gray-500"></i>
-                        <span>Estadísticas</span>
-                    </a>
-                    
-                    <a href="#" class="nav-item flex items-center px-4 py-3 rounded-lg">
-                        <i class="fas fa-cog mr-3 text-gray-500"></i>
-                        <span>Configuración</span>
-                    </a>
-                    
-                    <div class="pt-4 mt-4 border-t border-gray-200">
-                        <a href="#" class="nav-item flex items-center px-4 py-3 rounded-lg">
-                            <i class="fas fa-question-circle mr-3 text-gray-500"></i>
-                            <span>Ayuda</span>
-                        </a>
-                        
-                        <a href="#" class="nav-item flex items-center px-4 py-3 rounded-lg">
-                            <i class="fas fa-sign-out-alt mr-3 text-gray-500"></i>
-                            <span>Cerrar sesión</span>
-                        </a>
-                    </div>
-                </nav>
-            </div>
-            
-            <div class="px-4 py-4 border-t border-gray-200">
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
                 <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">
-                            JS
-                        </div>
-                    </div>
-                    <div class="ml-3">
-                        <p class="text-sm font-medium text-gray-900">Juan Sánchez</p>
-                        <p class="text-xs text-gray-500">Plan Premium</p>
-                    </div>
+                    <a href="index.html" class="flex items-center">
+                        <span class="text-2xl font-bold text-primary-600 dark:text-primary-500">LinkSh</span>
+                    </a>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="index.html" class="text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 text-sm font-medium">Inicio</a>
+                    <a href="dashboard.html" class="text-primary-600 dark:text-primary-500 border-b-2 border-primary-600 dark:border-primary-500 px-3 py-2 text-sm font-medium">Dashboard</a>
+                </nav>
+                <div class="flex items-center space-x-4">
+                    <button id="themeToggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-800 dark:text-gray-200 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-800 dark:text-gray-200 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                        </svg>
+                    </button>
+                    <span id="userEmail" class="text-gray-700 dark:text-gray-300 text-sm"></span>
+                    <button id="logoutButton" class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 text-sm font-medium">Cerrar Sesión</button>
                 </div>
             </div>
         </div>
-    </div>
+    </header>
 
     <!-- Main Content -->
-    <div class="main-content min-h-screen">
-        <!-- Header -->
-        <header class="bg-white shadow-sm">
-            <div class="flex items-center justify-between px-4 py-4">
-                <div class="flex items-center">
-                    <button class="menu-btn mr-2 text-gray-600" id="menu-btn">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
-                    <h1 class="text-xl font-semibold text-gray-900">Dashboard</h1>
-                </div>
-                
-                <div class="flex items-center space-x-4">
-                    <button class="relative text-gray-600">
-                        <i class="fas fa-bell"></i>
-                        <span class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">3</span>
-                    </button>
-                    
-                    <div class="relative">
-                        <button class="flex items-center text-sm focus:outline-none">
-                            <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold">
-                                JS
-                            </div>
-                        </button>
-                    </div>
-                </div>
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="px-4 py-6 sm:px-0">
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Gestiona todos tus enlaces acortados</p>
             </div>
-        </header>
 
-        <!-- Contenido principal -->
-        <main class="p-4 md:p-6">
-            <!-- Estadísticas rápidas -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div class="card stats-card clicks p-5">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-mouse-pointer text-blue-600"></i>
-                            </div>
-                        </div>
-                        <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-600">Clicks totales</p>
-                            <p class="text-2xl font-bold text-gray-900" id="total-clicks">1,248</p>
-                        </div>
-                    </div>
-                    <div class="mt-2">
-                        <p class="text-xs text-green-600 font-medium">
-                            <i class="fas fa-arrow-up"></i> 12.5% desde ayer
-                        </p>
-                    </div>
-                </div>
-                
-                <div class="card stats-card links p-5">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-link text-green-600"></i>
-                            </div>
-                        </div>
-                        <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-600">URLs acortadas</p>
-                            <p class="text-2xl font-bold text-gray-900" id="total-urls">24</p>
-                        </div>
-                    </div>
-                    <div class="mt-2">
-                        <p class="text-xs text-green-600 font-medium">
-                            <i class="fas fa-arrow-up"></i> 2 nuevas hoy
-                        </p>
-                    </div>
-                </div>
-                
-                <div class="card stats-card rate p-5">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-percentage text-yellow-600"></i>
-                            </div>
-                        </div>
-                        <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-600">Tasa de clicks</p>
-                            <p class="text-2xl font-bold text-gray-900" id="click-rate">4.8%</p>
-                        </div>
-                    </div>
-                    <div class="mt-2">
-                        <p class="text-xs text-green-600 font-medium">
-                            <i class="fas fa-arrow-up"></i> 0.5% desde ayer
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Acortar nueva URL -->
-            <div class="card p-6 mb-6">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">Acortar nueva URL</h2>
-                <form id="shorten-form" class="flex flex-col md:flex-row gap-4">
-                    <div class="flex-grow">
-                        <input type="url" id="url-input" class="input-field w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="https://ejemplo.com/url-muy-larga" required>
-                    </div>
-                    <div class="flex-shrink-0">
-                        <button type="submit" class="btn-primary text-white px-6 py-3 rounded-lg font-medium w-full md:w-auto">
-                            Acortar URL
-                        </button>
-                    </div>
+            <!-- Shorten URL Form -->
+            <div class="mb-8 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Acortar nuevo enlace</h2>
+                <form id="shortenForm" class="flex flex-col sm:flex-row gap-4">
+                    <input type="url" id="urlInput" placeholder="https://ejemplo.com/url-muy-larga" required
+                        class="flex-grow px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                    <button type="submit" class="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        Acortar
+                    </button>
                 </form>
-                
-                <div class="mt-4 flex items-center">
-                    <div class="flex items-center mr-4">
-                        <div class="relative inline-block w-10 mr-2 align-middle select-none">
-                            <input type="checkbox" name="custom-url" id="custom-url-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
-                            <label for="custom-url-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
-                        </div>
-                        <label for="custom-url-toggle" class="text-sm text-gray-700">Personalizar URL</label>
-                    </div>
-                    
-                    <div class="flex items-center">
-                        <div class="relative inline-block w-10 mr-2 align-middle select-none">
-                            <input type="checkbox" name="custom-url" id="expiration-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
-                            <label for="expiration-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
-                        </div>
-                        <label for="expiration-toggle" class="text-sm text-gray-700">Establecer expiración</label>
-                    </div>
-                </div>
-                
-                <div id="custom-url-container" class="mt-4 hidden">
-                    <div class="flex flex-col md:flex-row gap-4">
-                        <div class="flex-grow">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Personalizar código</label>
-                            <div class="flex rounded-lg">
-                                <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500">swiftlink.io/</span>
-                                <input type="text" id="custom-alias" class="input-field flex-1 rounded-none rounded-r-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="micodigo">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Gráfico y URLs recientes -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <!-- Gráfico de clicks -->
-                <div class="card p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-lg font-semibold text-gray-900">Clicks últimos 7 días</h2>
-                        <button class="text-sm text-primary font-medium">Ver reporte completo</button>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="clicksChart"></canvas>
-                    </div>
-                </div>
-                
-                <!-- URLs recientes -->
-                <div class="card p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-lg font-semibold text-gray-900">URLs recientes</h2>
-                        <button class="text-sm text-primary font-medium">Ver todas</button>
-                    </div>
-                    
-                    <div class="overflow-x-auto">
-                        <table class="url-table">
-                            <thead>
-                                <tr>
-                                    <th>URL acortada</th>
-                                    <th>Clicks</th>
-                                    <th>Fecha</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recent-urls">
-                                <!-- Las URLs se cargarán aquí mediante JavaScript -->
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <div class="mt-4 flex justify-between items-center">
-                        <div class="text-sm text-gray-600">Mostrando 5 de 24 URLs</div>
-                        <div class="flex space-x-2">
-                            <button class="pagination-btn disabled w-8 h-8 rounded-lg flex items-center justify-center text-gray-400">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <button class="pagination-btn w-8 h-8 rounded-lg flex items-center justify-center bg-primary text-white">1</button>
-                            <button class="pagination-btn w-8 h-8 rounded-lg flex items-center justify-center text-gray-700">2</button>
-                            <button class="pagination-btn w-8 h-8 rounded-lg flex items-center justify-center text-gray-700">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Todas las URLs -->
-            <div class="card p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg font-semibold text-gray-900">Todas tus URLs</h2>
-                    <div class="flex items-center space-x-2">
-                        <div class="relative">
-                            <input type="text" placeholder="Buscar URL..." class="input-field pl-10 pr-4 py-2 rounded-lg">
-                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        </div>
-                        <button class="btn-primary text-white px-4 py-2 rounded-lg font-medium flex items-center">
-                            <i class="fas fa-filter mr-2"></i> Filtros
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="overflow-x-auto">
-                    <table class="url-table">
-                        <thead>
-                            <tr>
-                                <th>URL original</th>
-                                <th>URL acortada</th>
-                                <th>Clicks</th>
-                                <th>Fecha creación</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="all-urls">
-                            <!-- Las URLs se cargarán aquí mediante JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class="mt-4 flex justify-between items-center">
-                    <div class="text-sm text-gray-600">Mostrando 10 de 24 URLs</div>
-                    <div class="flex space-x-2">
-                        <button class="pagination-btn disabled w-8 h-8 rounded-lg flex items-center justify-center text-gray-400">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="pagination-btn w-8 h-8 rounded-lg flex items-center justify-center bg-primary text-white">1</button>
-                        <button class="pagination-btn w-8 h-8 rounded-lg flex items-center justify-center text-gray-700">2</button>
-                        <button class="pagination-btn w-8 h-8 rounded-lg flex items-center justify-center text-gray-700">3</button>
-                        <button class="pagination-btn w-8 h-8 rounded-lg flex items-center justify-center text-gray-700">
-                            <i class="fas fa-chevron-right"></i>
+                <div id="resultContainer" class="mt-4 hidden">
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Tu enlace acortado:</p>
+                    <div class="flex items-center bg-gray-50 dark:bg-gray-700 p-3 rounded-md border border-gray-300 dark:border-gray-600">
+                        <input type="text" id="shortUrl" readonly class="flex-grow bg-transparent border-none text-gray-900 dark:text-white focus:outline-none">
+                        <button id="copyButton" class="ml-2 px-3 py-1 bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 text-sm rounded-md hover:bg-primary-200 dark:hover:bg-primary-800">
+                            Copiar
                         </button>
                     </div>
                 </div>
             </div>
-        </main>
-    </div>
 
-    <!-- Modal para nueva URL -->
-    <div class="modal-container" id="success-modal">
-        <div class="modal">
-            <div class="p-6">
-                <div class="text-center mb-4">
-                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <i class="fas fa-check text-green-600 text-2xl"></i>
-                    </div>
-                    <h3 class="text-lg font-medium text-gray-900">¡URL acortada con éxito!</h3>
-                    <p class="text-gray-500 mt-1">Tu URL ha sido acortada correctamente.</p>
+            <!-- Links List -->
+            <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md">
+                <div class="px-4 py-5 border-b border-gray-200 dark:border-gray-700 sm:px-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">Tus enlaces acortados</h3>
                 </div>
-                
-                <div class="bg-gray-50 p-4 rounded-lg mb-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-600">URL acortada</p>
-                            <a href="#" id="shortened-url" class="text-primary font-medium break-all">https://swiftlink.io/abc123</a>
-                        </div>
-                        <button class="copy-btn text-gray-500 hover:text-primary p-2 rounded-lg" id="copy-url-btn">
-                            <i class="fas fa-copy"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="flex space-x-3">
-                    <button class="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg font-medium" onclick="closeModal('success-modal')">
-                        Cerrar
-                    </button>
-                    <button class="flex-1 bg-primary text-white py-2 rounded-lg font-medium">
-                        Copiar URL
-                    </button>
-                </div>
+                <ul id="linksList" class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <li class="p-4 text-center text-gray-500 dark:text-gray-400">
+                        Cargando enlaces...
+                    </li>
+                </ul>
             </div>
         </div>
-    </div>
+    </main>
 
-    <!-- Scripts para gráficos -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    <script src="js/theme.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
     <script>
-        // Toggle sidebar en móviles
-        document.getElementById('menu-btn').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.getElementById('overlay').classList.toggle('active');
-        });
-        
-        document.getElementById('overlay').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.remove('active');
-            this.classList.remove('active');
-        });
-        
-        // Toggle para personalizar URL
-        document.getElementById('custom-url-toggle').addEventListener('change', function() {
-            document.getElementById('custom-url-container').classList.toggle('hidden');
-        });
-        
-        // Cerrar modal
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
+        // Check if user is logged in
+        if (!isLoggedIn()) {
+            window.location.href = 'login.html';
         }
-        
-        // Mostrar modal de éxito
-        function showSuccessModal(shortUrl) {
-            document.getElementById('shortened-url').textContent = shortUrl;
-            document.getElementById('shortened-url').href = shortUrl;
-            document.getElementById('success-modal').classList.add('active');
-        }
-        
-        // Copiar URL al portapapeles
-        document.getElementById('copy-url-btn').addEventListener('click', function() {
-            const shortUrl = document.getElementById('shortened-url').textContent;
-            navigator.clipboard.writeText(shortUrl).then(() => {
-                // Cambiar icono temporalmente para mostrar que se copió
-                const icon = this.querySelector('i');
-                icon.classList.remove('fa-copy');
-                icon.classList.add('fa-check');
-                
-                setTimeout(() => {
-                    icon.classList.remove('fa-check');
-                    icon.classList.add('fa-copy');
-                }, 2000);
-            });
+
+        // Display user email
+        const userEmail = localStorage.getItem('userEmail');
+        document.getElementById('userEmail').textContent = userEmail;
+
+        // Logout functionality
+        document.getElementById('logoutButton').addEventListener('click', function() {
+            logout();
+            window.location.href = 'index.html';
         });
-        
-        // Envío del formulario de acortamiento
-        document.getElementById('shorten-form').addEventListener('submit', function(e) {
+
+        // Shorten URL form
+        document.getElementById('shortenForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            const url = document.getElementById('urlInput').value;
             
-            const url = document.getElementById('url-input').value.trim();
-            if (!url) return;
-            
-            // Simular llamada a la API
-            simulateApiCall(url);
+            try {
+                const shortUrl = await shortenUrl(url);
+                
+                document.getElementById('shortUrl').value = shortUrl;
+                document.getElementById('resultContainer').classList.remove('hidden');
+                
+                // Reload the links list
+                loadUserLinks();
+            } catch (error) {
+                alert('Error al acortar la URL: ' + error.message);
+            }
         });
-        
-        // Simular llamada a la API
-        function simulateApiCall(originalUrl) {
-            // Mostrar estado de carga
-            const submitBtn = document.querySelector('#shorten-form button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
-            submitBtn.disabled = true;
-            
-            // Simular retraso de red
-            setTimeout(() => {
-                // Generar código aleatorio
-                const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-                let code = '';
-                for (let i = 0; i < 6; i++) {
-                    code += characters.charAt(Math.floor(Math.random() * characters.length));
+
+        // Copy button functionality
+        document.getElementById('copyButton').addEventListener('click', function() {
+            const shortUrlInput = document.getElementById('shortUrl');
+            shortUrlInput.select();
+            document.execCommand('copy');
+            alert('Enlace copiado al portapapeles');
+        });
+
+        // Load user links
+        async function loadUserLinks() {
+            try {
+                const userId = localStorage.getItem('userId');
+                const links = await getUserLinks(userId);
+                
+                const linksList = document.getElementById('linksList');
+                linksList.innerHTML = '';
+                
+                if (links.length === 0) {
+                    linksList.innerHTML = '<li class="p-4 text-center text-gray-500 dark:text-gray-400">No tienes enlaces acortados aún.</li>';
+                    return;
                 }
                 
-                const shortUrl = `https://swiftlink.io/${code}`;
-                
-                // Mostrar modal de éxito
-                showSuccessModal(shortUrl);
-                
-                // Restaurar botón
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-                
-                // Limpiar formulario
-                document.getElementById('url-input').value = '';
-                document.getElementById('custom-url-container').classList.add('hidden');
-                document.getElementById('custom-url-toggle').checked = false;
-            }, 1500);
-        }
-        
-        // Cargar datos de ejemplo
-        document.addEventListener('DOMContentLoaded', function() {
-            // Datos de ejemplo para URLs recientes
-            const recentUrlsData = [
-                { shortUrl: 'swiftlink.io/a1b2c3', originalUrl: 'https://ejemplo.com/pagina-muy-larga', clicks: 145, date: '2023-06-15' },
-                { shortUrl: 'swiftlink.io/x9y8z7', originalUrl: 'https://otra-url.com/articulo', clicks: 89, date: '2023-06-14' },
-                { shortUrl: 'swiftlink.io/p0q1r2', originalUrl: 'https://producto.com/detalles', clicks: 63, date: '2023-06-13' },
-                { shortUrl: 'swiftlink.io/m3n4o5', originalUrl: 'https://blog.com/post', clicks: 42, date: '2023-06-12' },
-                { shortUrl: 'swiftlink.io/s6t7u8', originalUrl: 'https://tienda.com/producto', clicks: 31, date: '2023-06-11' }
-            ];
-            
-            // Renderizar URLs recientes
-            const recentUrlsContainer = document.getElementById('recent-urls');
-            recentUrlsData.forEach(url => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-link text-blue-600"></i>
+                links.forEach(link => {
+                    const li = document.createElement('li');
+                    li.className = 'px-4 py-4 sm:px-6';
+                    li.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-sm font-medium text-primary-600 dark:text-primary-400 truncate">
+                                        ${link.originalUrl}
+                                    </p>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 truncate">
+                                        https://linksh.somee.com/${link.shortCode}
+                                    </p>
+                                </div>
                             </div>
-                            <div class="ml-3">
-                                <p class="text-sm font-medium text-gray-900">${url.shortUrl}</p>
-                                <p class="text-xs text-gray-500 truncate" style="max-width: 150px;">${url.originalUrl}</p>
+                            <div>
+                                <button class="ml-2 px-3 py-1 bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 text-sm rounded-md hover:bg-primary-200 dark:hover:bg-primary-800 copy-link" data-url="https://linksh.somee.com/${link.shortCode}">
+                                    Copiar
+                                </button>
                             </div>
                         </div>
-                    </td>
-                    <td class="text-sm font-medium text-gray-900">${url.clicks}</td>
-                    <td class="text-sm text-gray-500">${url.date}</td>
-                `;
-                recentUrlsContainer.appendChild(row);
-            });
-            
-            // Inicializar gráfico
-            const ctx = document.getElementById('clicksChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
-                    datasets: [{
-                        label: 'Clicks',
-                        data: [45, 78, 62, 94, 56, 34, 72],
-                        borderColor: '#6366F1',
-                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
-                        tension: 0.3,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                drawBorder: false
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
-            });
-        });
-        
-        // EJEMPLOS DE LLAMADAS A API (comentadas)
-        /*
-        // Obtener estadísticas del usuario
-        function getUserStats() {
-            $.ajax({
-                url: '/api/user/stats',
-                type: 'GET',
-                success: function(response) {
-                    $('#total-clicks').text(response.totalClicks.toLocaleString());
-                    $('#total-urls').text(response.totalUrls);
-                    $('#click-rate').text(response.clickRate + '%');
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error al obtener estadísticas:', error);
-                }
-            });
+                    `;
+                    linksList.appendChild(li);
+                });
+                
+                // Add event listeners to copy buttons
+                document.querySelectorAll('.copy-link').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const url = this.getAttribute('data-url');
+                        navigator.clipboard.writeText(url);
+                        alert('Enlace copiado al portapapeles');
+                    });
+                });
+            } catch (error) {
+                console.error('Error loading user links:', error);
+                document.getElementById('linksList').innerHTML = '<li class="p-4 text-center text-gray-500 dark:text-gray-400">Error al cargar los enlaces.</li>';
+            }
         }
         
-        // Obtener URLs del usuario
-        function getUserUrls(page = 1, limit = 10) {
-            $.ajax({
-                url: `/api/user/urls?page=${page}&limit=${limit}`,
-                type: 'GET',
-                success: function(response) {
-                    renderUrlsTable(response.urls);
-                    renderPagination(response.totalPages, response.currentPage);
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error al obtener URLs:', error);
-                }
-            });
-        }
-        
-        // Acortar una nueva URL
-        function shortenUrl(originalUrl, customAlias = null, expirationDate = null) {
-            $.ajax({
-                url: '/api/url/shorten',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    originalUrl: originalUrl,
-                    customAlias: customAlias,
-                    expirationDate: expirationDate
-                }),
-                success: function(response) {
-                    showSuccessModal(response.shortUrl);
-                    // Recargar la lista de URLs
-                    getUserUrls();
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error al acortar URL:', error);
-                    // Mostrar mensaje de error
-                    if (xhr.status === 400) {
-                        alert('URL inválida o alias ya en uso');
-                    } else {
-                        alert('Error del servidor. Intenta nuevamente.');
-                    }
-                }
-            });
-        }
-        */
+        // Initial load
+        loadUserLinks();
     </script>
 </body>
 </html>
